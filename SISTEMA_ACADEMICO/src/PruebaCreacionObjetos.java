@@ -8,8 +8,9 @@ public class PruebaCreacionObjetos {
         Estudiante estudiante = new Estudiante("123", "Valentina Zapata", "valenz@itm.edu.co", "E1", 4);
         Profesor profesor = new Profesor("456", "Andres Restrepo", "andres@itm.edu.co", "P1", "Sistemas");
 
-
+        
         Matricula matricula = new Matricula();
+        matricula.setEstudiante(estudiante);
         
         Persona[] personas = { estudiante, profesor };
 

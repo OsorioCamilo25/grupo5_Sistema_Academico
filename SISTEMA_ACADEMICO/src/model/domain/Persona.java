@@ -5,11 +5,14 @@ public abstract class Persona implements RolAcademico {
     private String nombre;
     private String correo; 
 
-    public Persona(String identificacion, String nombre, String correo){
-        this.identificacion = identificacion;
-        this.nombre = nombre;
-        this.correo = correo;
+public Persona(String identificacion, String nombre, String correo){
+    if (correo == null || !correo.contains("@")) {
+        throw new IllegalArgumentException("El correo debe contener el carácter '@'");
     }
+    this.identificacion = identificacion;
+    this.nombre = nombre;
+    this.correo = correo;
+}
 
     public String getIdentificacion() {
         return identificacion;
@@ -27,5 +30,7 @@ public abstract class Persona implements RolAcademico {
     public String datosResumen() {
         return "Identificación: " + identificacion + ", Nombre: " + nombre + ", Correo: " + correo;
     } 
+
+    public abstract String identificarRol();
 
 }

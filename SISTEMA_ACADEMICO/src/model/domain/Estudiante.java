@@ -20,6 +20,9 @@ public class Estudiante extends Persona{
     }
 
     public void setCodigo(String codigo) {
+        if (codigo == null || codigo.isBlank()) {
+            throw new IllegalArgumentException("El código no puede estar vacío");
+        }
         this.codigo = codigo;
     }
 
@@ -28,7 +31,10 @@ public class Estudiante extends Persona{
     }
 
     public void setSemestreActual(int semestreActual) {
-        this.semestreActual = semestreActual;
+    if (semestreActual <= 0) {
+        throw new IllegalArgumentException("El semestre debe ser mayor a 0");
     }
+    this.semestreActual = semestreActual;
+}
     
 }

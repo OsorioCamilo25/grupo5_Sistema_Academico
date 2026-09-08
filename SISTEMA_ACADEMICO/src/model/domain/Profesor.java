@@ -5,11 +5,11 @@ public class Profesor extends Persona {
     private String departamento;
 
     
-    public Profesor(String codigo, String departamento) {
-        super(identificacion,nombre,correo);
-        this.codigo = codigo;
-        this.departamento = departamento;
-    }
+public Profesor(String identificacion, String nombre, String correo, String codigo, String departamento) {
+    super(identificacion, nombre, correo); 
+    this.codigo = codigo;
+    this.departamento = departamento;
+}
 
     @Override
     public String identificarRol() {
