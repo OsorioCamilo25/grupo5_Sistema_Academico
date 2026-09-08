@@ -1,6 +1,6 @@
 package model.domain;
 
-public abstract class Persona {
+public abstract class Persona implements RolAcademico {
     private String identificacion;
     private String nombre;
     private String correo; 
@@ -24,7 +24,7 @@ public abstract class Persona {
     }
     
     @Override
-    public String datosResumen(){
+    public String datosResumen() {
         return "Identificación: " + identificacion + ", Nombre: " + nombre + ", Correo: " + correo;
     } 
 
