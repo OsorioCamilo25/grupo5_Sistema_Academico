@@ -45,4 +45,16 @@ public class Estudiante extends Persona{
         return matricula;
     }
     
+    @Override
+    public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    Estudiante otro = (Estudiante) obj;
+    return codigo != null && codigo.equals(otro.codigo);
+    }
+
+        @Override   
+        public int hashCode() {
+        return codigo != null ? codigo.hashCode() : 0;
+          }
 }
