@@ -79,4 +79,24 @@ public class Calificacion {
                 ", promedio=" + calcularPromedio() +
                 ", observaciones=" + observaciones + "]";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    Calificacion otra = (Calificacion) obj;
+    return materia != null && materia.equals(otra.materia)
+            && Double.compare(notaParcial1, otra.notaParcial1) == 0
+            && Double.compare(notaParcial2, otra.notaParcial2) == 0
+            && Double.compare(notaFinal, otra.notaFinal) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+    int result = materia != null ? materia.hashCode() : 0;
+    result = 31 * result + Double.hashCode(notaParcial1);
+    result = 31 * result + Double.hashCode(notaParcial2);
+    result = 31 * result + Double.hashCode(notaFinal);
+    return result;
+    }
 }
