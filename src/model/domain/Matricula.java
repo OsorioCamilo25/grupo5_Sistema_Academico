@@ -1,21 +1,20 @@
 package model.domain;
- 
-import java.util.ArrayList;
-import java.util.List;
- 
+
+import model.structures.ListaSimple;
+import model.structures.Nodo;
 public class Matricula {
  
     private Estudiante estudiante;
  
-    private List<Calificacion> calificaciones;
+    private ListaSimple<Calificacion> calificaciones;
  
     public Matricula() {
-        this.calificaciones = new ArrayList<>();
+        this.calificaciones = new ListaSimple<>();
     }
  
     public Matricula(Estudiante estudiante) {
         this.estudiante = estudiante;
-        this.calificaciones = new ArrayList<>();
+        this.calificaciones = new ListaSimple<>();
     }
  
     public Estudiante getEstudiante() {
@@ -33,32 +32,33 @@ public class Matricula {
         Calificacion nuevaCalificacion = new Calificacion(materia, notaParcial1,
                 notaParcial2, notaFinal, observaciones);
  
-        calificaciones.add(nuevaCalificacion);
+        calificaciones.insertarFinal(nuevaCalificacion);
  
         return nuevaCalificacion;
     }
  
     public boolean eliminarCalificacion(Calificacion calificacion) {
-        return calificaciones.remove(calificacion);
+        return calificaciones.eliminarPorValor(calificacion);
     }
  
-    public List<Calificacion> getCalificaciones() {
+    public ListaSimple<Calificacion> getCalificaciones() {
         return calificaciones;
     }
  
     public double calcularPromedioGeneral() {
  
-        if (calificaciones.isEmpty()) {
+        if (calificaciones.estaVacia()) {
             return 0.0;
         }
  
         double sumaPromedios = 0.0;
+        Nodo<Calificacion> actual = calificaciones.getHead();
+        while (actual != null) {
+        sumaPromedios = sumaPromedios + actual.getDato().calcularPromedio();
+        actual = actual.getSiguiente();
+    }
  
-        for (Calificacion c : calificaciones) {
-            sumaPromedios = sumaPromedios + c.calcularPromedio();
-        }
- 
-        return sumaPromedios / calificaciones.size();
+        return sumaPromedios / calificaciones.getTamano();
     }
  
     @Override
@@ -67,7 +67,15 @@ public class Matricula {
         String nombreEstudiante = (estudiante != null) ? estudiante.getNombre() : "Sin asignar";
  
         return "Matricula del estudiante: " + nombreEstudiante +
-                " | Cantidad de materias: " + calificaciones.size() +
+                " | Cantidad de materias: " + calificaciones.getTamano() +
                 " | Promedio general: " + calcularPromedioGeneral();
+    }
+
+    @Override 
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Matricula otra = (Matricula) obj;
+        return estudiante != null && estudiante.equals(otra.estudiante);
     }
 }
