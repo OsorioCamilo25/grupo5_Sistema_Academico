@@ -165,23 +165,29 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
         return true;
     }
 
-    public boolean eliminarPorValor(T dato) {
+public boolean eliminarPorValor(T dato) {
         if (this.estaVacia()) {
             System.out.println("No hay elementos para eliminar");
             return false;
         }
-        Nodo<T> datoAnterior = this.head;
-        Nodo<T> datoSiguiente = datoAnterior.getSiguiente();
-        while (datoSiguiente != null) {
-            if (datoSiguiente.getDato().equals(dato)) {
-                datoAnterior.setSiguiente(datoSiguiente.getSiguiente());
-                tamano--;
+        
+        if (this.head.getDato().equals(dato)) {
+            this.head = this.head.getSiguiente();
+            this.tamano--;
+            return true;
+        }
+
+        Nodo<T> actual = this.head;
+        while (actual.getSiguiente() != null) {
+            if (actual.getSiguiente().getDato().equals(dato)) {
+                actual.setSiguiente(actual.getSiguiente().getSiguiente());
+                this.tamano--;
                 return true;
             }
-            datoAnterior = datoSiguiente;
-            datoSiguiente = datoSiguiente.getSiguiente();
+            actual = actual.getSiguiente();
         }
-        return false;
+        
+        return false; 
     }
 
     @Override
