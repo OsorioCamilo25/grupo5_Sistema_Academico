@@ -1,13 +1,17 @@
 package model.domain;
+import model.structures.ListaSimple;
 
 public class Estudiante extends Persona{
     private String codigo;
     private int semestreActual;
+    private ListaSimple<Matricula> matricula;
 
     public Estudiante(String identificacion, String nombre, String correo, String codigo, int semestreActual){
         super(identificacion, nombre, correo);
         this.codigo = codigo;
         this.semestreActual = semestreActual;
+        this.matricula = new ListaSimple<>();
+
     }
     
     @Override 
@@ -36,5 +40,9 @@ public class Estudiante extends Persona{
     }
     this.semestreActual = semestreActual;
 }
+
+     public ListaSimple<Matricula> getMatricula(){
+        return matricula;
+    }
     
 }
