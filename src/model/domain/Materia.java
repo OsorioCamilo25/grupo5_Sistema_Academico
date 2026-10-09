@@ -1,5 +1,6 @@
 package model.domain;
- 
+
+import model.structures.Pila;
 
 public class Materia {
  
@@ -7,15 +8,21 @@ public class Materia {
     private String codigo;
     private String nombre;
     private int creditos;
+
+    private Pila<Calificacion> calificaciones;
  
     
     public Materia(String codigo, String nombre, int creditos) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.creditos = creditos;
+
+        this.calificaciones = new Pila<>();
     }
  
-   
+    public Pila<Calificacion> getCalificacionesRecientes(){
+        return calificaciones;
+    }
  
     public String getCodigo() {
         return codigo;

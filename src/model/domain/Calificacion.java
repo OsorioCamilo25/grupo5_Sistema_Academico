@@ -13,7 +13,7 @@ public class Calificacion {
     private Materia materia;
 
    
-    Calificacion(Materia materia, double notaParcial1, double notaParcial2,
+    public Calificacion(Materia materia, double notaParcial1, double notaParcial2,
                  double notaFinal, String observaciones) {
         this.materia = materia;
         this.notaParcial1 = notaParcial1;
