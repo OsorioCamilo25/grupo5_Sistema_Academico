@@ -119,53 +119,7 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
         tamano--;
     }
 
-    public Nodo<T> getHead() {
-        return head;
-    }
-
-    @Override
-    public void actualizar(int indice, T dato) {
-        if (indice < 0 || indice >= tamano) {
-            throw new IndexOutOfBoundsException("Indice fuera de rango: " + indice);
-        }
-        Nodo<T> datoActual = this.head;
-        for (int i = 0; i < indice; i++) {
-            datoActual = datoActual.getSiguiente();
-        }
-        datoActual.setDato(dato);
-    }
-
-    public boolean eliminarAlInicio() {
-        if (this.estaVacia()) {
-            System.out.println("No hay elementos para eliminar");
-            return false;
-        }
-        this.head = this.head.getSiguiente();
-        this.tamano--;
-        return true;
-    }
-
-    public boolean eliminarAlFinal() {
-        if (this.estaVacia()) {
-            System.out.println("No hay elementos para eliminar");
-            return false;
-        }
-        if (this.head.getSiguiente() == null) {
-            this.head = null;
-            tamano--;
-            return true;
-        }
-
-        Nodo<T> datoActual = this.head;
-        while (datoActual.getSiguiente().getSiguiente() != null) {
-            datoActual = datoActual.getSiguiente();
-        }
-        datoActual.setSiguiente(null);
-        this.tamano--;
-        return true;
-    }
-
-public boolean eliminarPorValor(T dato) {
+    public boolean eliminarPorValor(T dato) {
         if (this.estaVacia()) {
             System.out.println("No hay elementos para eliminar");
             return false;
@@ -193,5 +147,21 @@ public boolean eliminarPorValor(T dato) {
     @Override
     public boolean eliminar(T dato) {
         return eliminarPorValor(dato);
+    }
+
+    public Nodo<T> getHead() {
+        return head;
+    }
+
+    @Override
+    public void actualizar(int indice, T dato) {
+        if (indice < 0 || indice >= tamano) {
+            throw new IndexOutOfBoundsException("Indice fuera de rango: " + indice);
+        }
+        Nodo<T> datoActual = this.head;
+        for (int i = 0; i < indice; i++) {
+            datoActual = datoActual.getSiguiente();
+        }
+        datoActual.setDato(dato);
     }
 }
