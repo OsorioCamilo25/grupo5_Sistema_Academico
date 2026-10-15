@@ -7,15 +7,10 @@ import model.structures.ListaSimple;
 
 public class MatriculaService {
 
-    // Este es el método exacto que MenuView está buscando y necesita
     public Calificacion agregarCalificacion(Matricula matricula, Materia materia, 
                                             double notaParcial1, double notaParcial2,
                                             double notaFinal, String observaciones) {
-                                                
-        // 1. Registramos la calificación en la lista de la matrícula
         Calificacion nuevaCalificacion = matricula.registrarCalificacion(materia, notaParcial1, notaParcial2, notaFinal, observaciones);
-        
-        // 2. Apilamos la calificación en el historial de la materia (Pila)
         materia.getCalificacionesRecientes().push(nuevaCalificacion);
         
         return nuevaCalificacion;
@@ -49,4 +44,28 @@ public class MatriculaService {
         return materia.getCalificacionesRecientes().size();
     }  
 
+    public String listarHistorialNotas(Materia materia) {
+        model.structures.Pila<Calificacion> original = materia.getCalificacionesRecientes();
+        
+        if (original.isEmpty()) {
+            return "No hay calificaciones en el historial por deshacer.";
+        }
+
+        model.structures.Pila<Calificacion> auxiliar = new model.structures.Pila<>();
+        StringBuilder sb = new StringBuilder();
+        int contador = 1;
+
+        while (!original.isEmpty()) {
+            Calificacion nota = original.pop();
+            sb.append(contador).append(". ").append(nota.toString()).append("\n");
+            auxiliar.push(nota);
+            contador++;
+        }
+
+        while (!auxiliar.isEmpty()) {
+            original.push(auxiliar.pop());
+        }
+
+        return sb.toString();
+    }
 }
