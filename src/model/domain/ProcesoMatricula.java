@@ -1,5 +1,7 @@
 package model.domain;
 
+import model.structures.Cola;
+
 public class ProcesoMatricula {
     private String semestre;
     private Cola<Estudiante> fila;
@@ -13,7 +15,7 @@ public class ProcesoMatricula {
         return semestre;
     }
 
-    public Cola<T> getFila(){
+    public Cola<Estudiante> getFila(){
         return fila;
     }
 }
