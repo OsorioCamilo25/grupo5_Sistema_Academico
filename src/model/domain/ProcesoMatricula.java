@@ -7,6 +7,9 @@ public class ProcesoMatricula {
     private Cola<Estudiante> fila;
 
     public ProcesoMatricula(String semestre) {
+        if(semestre == null || semestre.isBlank() ){
+            throw new IllegalArgumentException("El semestre no puede ser vacío");
+        }
 		this.semestre = semestre;
 		this.fila = new Cola<>();
 	}
