@@ -4,10 +4,13 @@ import model.domain.Estudiante;
 import model.domain.Matricula;
 import model.structures.ListaSimple;
 import model.structures.Nodo;
+import model.domain.ProcesoMatricula;
+import model.structures.Cola;
 
 public class EstudianteService {
     
     private ListaSimple<Estudiante> estudiantes = new ListaSimple<>();
+    private ProcesoMatricula procesomatricula = new ProcesoMatricula("ProcesoMatricula 1");
 
     public Estudiante crearEstudiante(String identificacion, String nombre, String correo, String codigo, int semestre) {
         Estudiante nuevo = new Estudiante(identificacion, nombre, correo, codigo, semestre);
@@ -57,5 +60,34 @@ public class EstudianteService {
             i++;
         }
         return datos;
+    }
+
+    private Estudiante buscarEstudianteOFallar(String identificacion) {
+        Estudiante estudiante = buscarPorIdentificacion(identificacion);
+        if (estudiante == null) {
+            throw new IllegalArgumentException("El estudiante " + identificacion + " no existe");
+        }
+        return estudiante;
+    }
+
+    public void registrarSolicitud(String identificacion){
+        Estudiante estudiante = buscarEstudianteOFallar(identificacion);
+        procesomatricula.getFila().enqueue(estudiante);
+    }
+    
+    public Estudiante procesarSiguienteSolicitud(){
+        return procesomatricula.getFila().dequeue();
+    }
+
+    public Estudiante consultarSiguienteSolicitud(){
+        return procesomatricula.getFila().front();
+    }
+
+    public boolean sinSolicitudesEnEspera() {
+        return procesomatricula.getFila().isEmpty();
+    }
+
+    public int contarSolicitudesEnEspera() {
+        return procesomatricula.getFila().size();
     }
 }
