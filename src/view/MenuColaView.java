@@ -43,14 +43,11 @@ public class MenuColaView {
 
     private void registrarLlegada() {
         String identificacion = ConsoleUtils.leerTexto("Identificación del estudiante: ");
-        
-        // TODO 1 resuelto
         estudianteService.registrarSolicitud(identificacion);
         System.out.println("El estudiante ha sido registrado en la fila exitosamente.");
     }
 
     private void atender() {
-        // TODO 2 resuelto: chequeo preventivo sin usar try/catch
         if (estudianteService.sinSolicitudesEnEspera()) {
             System.out.println("No hay estudiantes en espera para ser atendidos.");
             return;
@@ -61,7 +58,6 @@ public class MenuColaView {
     }
 
     private void consultarSiguiente() {
-        // TODO 3 resuelto
         if (estudianteService.sinSolicitudesEnEspera()) {
             System.out.println("No hay estudiantes en espera.");
             return;
@@ -72,7 +68,6 @@ public class MenuColaView {
     }
 
     private void verSiHayEnEspera() {
-        // TODO 4 resuelto
         if (estudianteService.sinSolicitudesEnEspera()) {
             System.out.println("Estado de la fila: No hay estudiantes en espera.");
         } else {
@@ -81,12 +76,13 @@ public class MenuColaView {
     }
 
     private void contar() {
-        // TODO 5 resuelto
         int cantidad = estudianteService.contarSolicitudesEnEspera();
         System.out.println("Cantidad de estudiantes actualmente en la fila: " + cantidad);
     }
 
     private void listar() {
-        // TODO 6: se completa en la Parte 7, cuando exista listarEnEspera en el Service
+        String listado = estudianteService.listarSolicitudesEnEspera();
+        System.out.println("\n--- ESTUDIANTES EN LA FILA DE MATRÍCULA ---");
+        System.out.println(listado);
     }
 }

@@ -46,7 +46,6 @@ public class EstudianteService {
         return estudiante.getMatricula().eliminarPorValor(dummy);
     }
 
-    // Método que formatea los datos para la vista sin exponer nodos
     public String[] listarMatriculasFormateadas(Estudiante estudiante) {
         ListaSimple<Matricula> lista = estudiante.getMatricula();
         if (lista.estaVacia()) return new String[0];
@@ -89,5 +88,20 @@ public class EstudianteService {
 
     public int contarSolicitudesEnEspera() {
         return procesomatricula.getFila().size();
+    }
+
+    public String listarSolicitudesEnEspera() {
+        model.structures.Cola<model.domain.Estudiante> fila = procesomatricula.getFila();
+        if (fila.isEmpty()) {
+            return "No hay estudiantes en espera.";
+        }
+        StringBuilder sb = new StringBuilder();
+        int total = fila.size();
+        for (int i = 0; i < total; i++) {
+            model.domain.Estudiante estudiante = fila.dequeue();
+            sb.append(i + 1).append(". ").append(estudiante.toString()).append("\n");
+            fila.enqueue(estudiante);
+        }
+        return sb.toString();
     }
 }
