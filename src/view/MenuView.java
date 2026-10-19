@@ -26,6 +26,10 @@ public class MenuView {
                     MenuPilaView menuPila = new MenuPilaView(matriculaService);
                     menuPila.iniciar();
                 }
+                case 6 -> {
+                    MenuColaView menuCola = new MenuColaView(estudianteService);
+                    menuCola.iniciar();
+                }
                 case 0 -> System.out.println("Saliendo del sistema...");
                 default -> System.out.println("Opcion en desarrollo o invalida.");
             }
@@ -40,6 +44,7 @@ public class MenuView {
         System.out.println("3. Eliminar matricula de estudiante");
         System.out.println("4. Agregar calificacion a materia real");
         System.out.println("5. Probar estructura de Pila");
+        System.out.println("6. Probar estructura de Cola");
         System.out.println("0. Salir");
     }
 
