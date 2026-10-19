@@ -1,4 +1,4 @@
-package service; // Asegúrate de haber movido el archivo a la carpeta service
+package service;
 
 import model.domain.Estudiante;
 import model.domain.Matricula;
