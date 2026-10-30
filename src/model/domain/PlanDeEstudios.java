@@ -1,3 +1,6 @@
+package model.domain;
+import  model.structures.ListaDoble;
+
 public class PlanDeEstudios {
     private String programa;
     private ListaDoble<Materia> materias;
@@ -6,7 +9,7 @@ public class PlanDeEstudios {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre del plan de estudios no puede estar vacío");
         }
-        this.nombre = nombre;
+        this.programa = nombre;
         this.materias = new ListaDoble<Materia>();
     }
 
