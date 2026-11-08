@@ -1,11 +1,25 @@
 package service;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import model.domain.Calificacion;
 import model.domain.Materia;
 import model.domain.Matricula;
+import model.domain.PlanDeEstudios;
+import model.domain.ProcesoMatricula;
 import model.structures.ListaSimple;
+import model.structures.NodoDoble;
 
 public class MatriculaService {
+
+    private static final String ARCHIVO_MATERIAS = "data/productos.txt";
+    private static final String SEPARADOR = ";";
+    private final PlanDeEstudios materias = new PlanDeEstudios("Materias");
+
+
 
     public Calificacion agregarCalificacion(Matricula matricula, Materia materia, 
                                             double notaParcial1, double notaParcial2,
@@ -68,4 +82,48 @@ public class MatriculaService {
 
         return sb.toString();
     }
+
+    private void escribirProductos() throws IOException {
+        File carpeta = new File(ARCHIVO_MATERIAS).getParentFile();
+        if (carpeta != null && !carpeta.exists()) {
+            carpeta.mkdirs();
+        }
+
+
+        String texto = "";
+        NodoDoble<Materia> actual = materias.getMaterias().getHead();
+        while (actual != null) {
+            Materia programa = actual.getDato();
+            texto += String.join(SEPARADOR,
+                    programa.getCodigo(),
+                    programa.getNombre(),
+                   String.valueOf(programa.getCreditos()))
+                    + "\n";
+            actual = actual.getSiguiente();
+        }
+
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(ARCHIVO_MATERIAS))) {
+            escritor.write(texto);
+        }
+
+    }
+
+    public String guardarProductos() {
+        try {
+            escribirProductos();
+            return "Se guardaron " + materias.getMaterias().size() + " productos en " + ARCHIVO_MATERIAS;
+        } catch (IOException e) {
+            return "No se pudo guardar: " + e.getMessage();
+        }
+    }
+
+     public String cargarProductos() {
+        File archivo = new File(ARCHIVO_MATERIAS);
+
+        
+        while (materias.getMaterias().getHead() != null) {
+            materias.getMaterias().eliminar(materias.getMaterias().getHead());
+        }
+
+
 }

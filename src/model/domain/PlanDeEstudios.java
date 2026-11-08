@@ -21,6 +21,24 @@ public class PlanDeEstudios {
     public ListaDoble<Materia> getMaterias() {
         return materias;
     }
+
+
+    public CharSequence getCodigo() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCodigo'");
+    }
+
+
+    public CharSequence getNombre() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getNombre'");
+    }
+
+
+    public CharSequence getcreditos() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getcreditos'");
+    }
     
 }
 
