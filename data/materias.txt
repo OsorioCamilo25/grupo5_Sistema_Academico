@@ -1,3 +1,5 @@
-MAT01;Calculo;3
-MAT02;Programacion;3
-MAT03;Fisica;3
+CB01;Calculo Diferencial;4
+CB02;Algebra Lineal y Geometria Vectorial;3
+IT01;Matematicas para la Informatica;3
+IT02;Estructura de Datos y Laboratorio;3
+IT03;Programacion Orientada a Objetos en Java;4

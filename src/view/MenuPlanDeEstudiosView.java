@@ -9,7 +9,6 @@ public class MenuPlanDeEstudiosView {
 
     public MenuPlanDeEstudiosView(PlandeEstudioService planService) {
         this.planService = planService;
-        // Imprime el resumen de carga de archivos que hizo tu compañero
         System.out.println("\n--- ESTADO DE CARGA DE ARCHIVOS ---");
         System.out.println(planService.consultarEstadoCarga());
     }
@@ -48,23 +47,36 @@ public class MenuPlanDeEstudiosView {
         System.out.println("0. Guardar y volver al menú principal");
     }
 
-    private void registrarEnPlan() {
+private void registrarEnPlan() {
         String codigo = ConsoleUtils.leerTexto("Código de la materia a agregar al plan: ");
         
-        // Chequeos preventivos sin try/catch
-        if (!planService.existeMateriaRegistrada(codigo)) {
-            System.out.println("La materia no existe en el sistema general. Regístrela primero.");
+        if (codigo == null || codigo.isBlank()) {
+            System.out.println("Error: El código no puede estar vacío.");
             return;
+        }
+        if (!planService.existeMateriaRegistrada(codigo)) {
+            System.out.println("-> La materia no existe en el sistema general. Vamos a registrarla primero.");
+            
+            String nombre = ConsoleUtils.leerTexto("Nombre de la nueva materia: ");
+            if (nombre == null || nombre.isBlank()) {
+                System.out.println("Error: El nombre es obligatorio. Registro cancelado.");
+                return;
+            }
+
+            int creditos = ConsoleUtils.leerEntero("Cantidad de créditos: ");
+            if (creditos <= 0) {
+                System.out.println("Error: Los créditos deben ser mayores a cero. Registro cancelado.");
+                return;
+            }
+            System.out.println(planService.registrarMateria(codigo, nombre, creditos));
         }
         if (planService.estaMateriaEnPlan(codigo)) {
-            System.out.println("La materia ya se encuentra dentro del plan de estudios.");
+            System.out.println("Error: La materia ya se encuentra dentro del plan de estudios.");
             return;
         }
-
         String resultado = planService.agregarMateriaAlPlan(codigo);
         System.out.println(resultado);
     }
-
     private void hojearAnterior() {
         if (planService.contarMaterias() == 0) {
             System.out.println("El plan de estudios está vacío.");
@@ -96,8 +108,6 @@ public class MenuPlanDeEstudiosView {
             System.out.println("El plan de estudios está vacío, no hay nada que retirar.");
             return;
         }
-        
-        // El documento exige que el NoSuchElementException salga desde el Service si no hay selección[cite: 4]
         try {
             System.out.println(planService.retirarMateriaDelPlan());
         } catch (java.util.NoSuchElementException e) {
@@ -106,7 +116,6 @@ public class MenuPlanDeEstudiosView {
     }
 
     private void guardarArchivos() {
-        // La View solo imprime lo que el Service devuelve de guardar[cite: 4]
         System.out.println(planService.guardarMateriasRegistradas());
         System.out.println(planService.guardarPlanDeEstudios());
     }

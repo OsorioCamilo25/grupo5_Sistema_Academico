@@ -1,3 +1,5 @@
-Desarrollo de Software;MAT01
-Desarrollo de Software;MAT02
-Desarrollo de Software;MAT03
+CB01
+CB02
+IT01
+IT02
+IT03
