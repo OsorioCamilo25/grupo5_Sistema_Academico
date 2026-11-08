@@ -1,7 +1,9 @@
 package service;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -10,6 +12,7 @@ import model.domain.Materia;
 import model.domain.Matricula;
 import model.domain.PlanDeEstudios;
 import model.domain.ProcesoMatricula;
+import model.structures.ListaDoble;
 import model.structures.ListaSimple;
 import model.structures.NodoDoble;
 
@@ -83,7 +86,7 @@ public class MatriculaService {
         return sb.toString();
     }
 
-    private void escribirProductos() throws IOException {
+    private void escribirMaterias() throws IOException {
         File carpeta = new File(ARCHIVO_MATERIAS).getParentFile();
         if (carpeta != null && !carpeta.exists()) {
             carpeta.mkdirs();
@@ -110,20 +113,54 @@ public class MatriculaService {
 
     public String guardarProductos() {
         try {
-            escribirProductos();
+            escribirMaterias();
             return "Se guardaron " + materias.getMaterias().size() + " productos en " + ARCHIVO_MATERIAS;
         } catch (IOException e) {
             return "No se pudo guardar: " + e.getMessage();
         }
     }
 
-     public String cargarProductos() {
+    public String cargarProductos() {
         File archivo = new File(ARCHIVO_MATERIAS);
+        if (!archivo.isFile()) {
+            return "No existe el archivo: " + ARCHIVO_MATERIAS;
+        }
 
         
+        ListaDoble<Materia> leidas = new ListaDoble<>();
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            int numeroLinea = 0;
+            while ((linea = lector.readLine()) != null) {
+                numeroLinea++;
+                if (linea.isBlank()) continue;
+                String[] campos = linea.split(SEPARADOR, -1);
+                if (campos.length != 3 || campos[0].isBlank() || campos[1].isBlank()) {
+                    return "Formato incorrecto en la linea " + numeroLinea;
+                }
+                int creditos;
+                try {
+                    creditos = Integer.parseInt(campos[2].trim());
+                } catch (NumberFormatException e) {
+                    return "Creditos invalidos en la linea " + numeroLinea;
+                }
+                if (creditos <= 0) {
+                    return "Los creditos deben ser positivos en la linea " + numeroLinea;
+                }
+                leidas.insertarAlFinal(new Materia(campos[0], campos[1], creditos));
+            }
+        } catch (IOException e) {
+            return "No se pudo cargar: " + e.getMessage();
+        }
+
         while (materias.getMaterias().getHead() != null) {
             materias.getMaterias().eliminar(materias.getMaterias().getHead());
         }
-
-
+        NodoDoble<Materia> actual = leidas.getHead();
+        while (actual != null) {
+            materias.getMaterias().insertarAlFinal(actual.getDato());
+            actual = actual.getSiguiente();
+        }
+        return "Se cargaron " + materias.getMaterias().size() + " materias.";
+    }
 }

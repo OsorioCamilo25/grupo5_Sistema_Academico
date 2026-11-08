@@ -5,15 +5,16 @@ public class PlanDeEstudios {
     private String programa;
     private ListaDoble<Materia> materias;
 
-    public PlanDeEstudios(String programa){
+public PlanDeEstudios(String programa) {
         if (programa == null || programa.isBlank()) {
-            throw new IllegalArgumentException("El nombre del plan de estidos no puede estar vacio");
+            throw new IllegalArgumentException(
+                    "El nombre del plan de estudios no puede estar vacio");
         }
+
         this.programa = programa;
-        this.materias = new ListaDoble<Materia>();
+        this.materias = new ListaDoble<>();
     }
 
-    
     public String getPrograma() {
         return programa;
     }
@@ -21,24 +22,5 @@ public class PlanDeEstudios {
     public ListaDoble<Materia> getMaterias() {
         return materias;
     }
-
-
-    public CharSequence getCodigo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCodigo'");
-    }
-
-
-    public CharSequence getNombre() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getNombre'");
-    }
-
-
-    public CharSequence getcreditos() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getcreditos'");
-    }
-    
 }
 
