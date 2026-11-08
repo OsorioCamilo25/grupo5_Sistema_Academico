@@ -3,6 +3,7 @@ package view;
 import utils.ConsoleUtils;
 import service.EstudianteService;
 import service.MatriculaService;
+import service.PlandeEstudioService;
 import model.domain.Estudiante;
 import model.domain.Matricula;
 import model.domain.Materia;
@@ -11,6 +12,7 @@ public class MenuView {
     
     private EstudianteService estudianteService = new EstudianteService();
     private MatriculaService matriculaService = new MatriculaService();
+    private PlandeEstudioService planService = new PlandeEstudioService("Tecnología en Desarrollo de Software");
 
     public void iniciar() {
         int opcion;
@@ -30,6 +32,10 @@ public class MenuView {
                     MenuColaView menuCola = new MenuColaView(estudianteService);
                     menuCola.iniciar();
                 }
+                case 7 -> {
+                    MenuPlanDeEstudiosView menuPlan = new MenuPlanDeEstudiosView(planService);
+                    menuPlan.iniciar();
+                }
                 case 0 -> System.out.println("Saliendo del sistema...");
                 default -> System.out.println("Opcion en desarrollo o invalida.");
             }
@@ -45,6 +51,7 @@ public class MenuView {
         System.out.println("4. Agregar calificacion a materia real");
         System.out.println("5. Probar estructura de Pila");
         System.out.println("6. Probar estructura de Cola");
+        System.out.println("7. Gestionar Plan de Estudios (Listas Dobles y Archivos)");
         System.out.println("0. Salir");
     }
 

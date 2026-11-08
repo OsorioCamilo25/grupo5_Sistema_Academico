@@ -203,7 +203,7 @@ public String consultarEstadoCarga() {
     }
 
     public String guardarPlanDeEstudios() {
-        File archivo = new File("data/plan_estudios.txt");
+        File archivo = new File("data/plan.txt");
         File carpeta = archivo.getParentFile();
         try {
             if (!carpeta.isDirectory() && !carpeta.mkdirs()) {
@@ -212,14 +212,14 @@ public String consultarEstadoCarga() {
             try (BufferedWriter escritor = new BufferedWriter(new FileWriter(archivo))) {
                 NodoDoble<Materia> actual = plan.getMaterias().getHead();
                 while (actual != null) {
-                    escritor.write(String.join(";", plan.getPrograma(), actual.getDato().getCodigo()));
+                    escritor.write(actual.getDato().getCodigo());
                     escritor.newLine();
                     actual = actual.getSiguiente();
                 }
             }
-            return "Se guardaron " + plan.getMaterias().size() + " plandeestudios.";
+            return "Se guardaron " + plan.getMaterias().size() + " materias en el plan de estudios.";
         } catch (IOException e) {
-            return "No se pudo guardar plandeestudios: " + e.getMessage();
+            return "No se pudo guardar plan de estudios: " + e.getMessage();
         }
     }
 
@@ -228,32 +228,56 @@ public String consultarEstadoCarga() {
             plan.getMaterias().eliminar(plan.getMaterias().getHead());
         }
         int omitidas = 0;
-        try (BufferedReader lector = new BufferedReader(
-                new FileReader("data/plan_estudios.txt"))) {
+        try (BufferedReader lector = new BufferedReader(new FileReader("data/plan.txt"))) {
             String linea;
             while ((linea = lector.readLine()) != null) {
-                String[] campos = linea.split(";", -1);
-                if (campos.length != 2) {
+                if (linea.trim().isEmpty()) {
                     omitidas++;
                     continue;
                 }
                 try {
-                    if (!campos[0].equals(plan.getPrograma())) {
-                        omitidas++;
-                        continue;
-                    }
-                    agregarMateriaAlPlan(campos[1]);
+                    agregarMateriaAlPlan(linea.trim());
                 } catch (IllegalArgumentException e) {
                     omitidas++;
                     continue;
                 }
             }
-            return "Se cargaron " + plan.getMaterias().size() + " plandeestudios"
-                    + ". Lineas omitidas: " + omitidas;
+            return "Se cargaron " + plan.getMaterias().size() + " materias al plan de estudios. Lineas omitidas: " + omitidas;
         } catch (FileNotFoundException e) {
-            return "No se encontro data/plan_estudios.txt; la estructura queda vacia.";
+            return "No se encontro data/plan.txt; la estructura queda vacia.";
         } catch (IOException e) {
-            return "No se pudo leer data/plan_estudios.txt: " + e.getMessage();
+            return "No se pudo leer data/plan.txt: " + e.getMessage();
+        }
+    }
+
+    public boolean estaMateriaEnPlan(String codigo) {
+        NodoDoble<Materia> actual = plan.getMaterias().getHead();
+        while (actual != null) {
+            if (actual.getDato().getCodigo().equals(codigo)) {
+                return true;
+            }
+            actual = actual.getSiguiente();
+        }
+        return false;
+    }
+
+    public boolean hayMateriaAnterior() {
+        try {
+            plan.getMaterias().anterior();
+            plan.getMaterias().siguiente(); 
+            return true;
+        } catch (java.util.NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    public boolean hayMateriaSiguiente() {
+        try {
+            plan.getMaterias().siguiente();
+            plan.getMaterias().anterior(); 
+            return true;
+        } catch (java.util.NoSuchElementException e) {
+            return false;
         }
     }
 
