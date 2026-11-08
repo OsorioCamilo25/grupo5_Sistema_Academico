@@ -1,5 +1,13 @@
 package service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import model.domain.Estudiante;
 import model.domain.Matricula;
 import model.structures.ListaSimple;
@@ -11,6 +19,20 @@ public class EstudianteService {
     
     private ListaSimple<Estudiante> estudiantes = new ListaSimple<>();
     private ProcesoMatricula procesomatricula = new ProcesoMatricula("ProcesoMatricula 1");
+
+    private String estadoCarga;
+
+    public EstudianteService() {
+        estadoCarga = cargarEstudiantes();
+    }
+
+    public String consultarEstadoCarga() {
+        return estadoCarga;
+    }
+
+    public int contarEstudiantes() {
+        return estudiantes.getTamano();
+    }
 
     public Estudiante crearEstudiante(String identificacion, String nombre, String correo, String codigo, int semestre) {
         Estudiante nuevo = new Estudiante(identificacion, nombre, correo, codigo, semestre);
@@ -103,5 +125,57 @@ public class EstudianteService {
             fila.enqueue(estudiante);
         }
         return sb.toString();
+    }
+    public String guardarEstudiantes() {
+        File archivo = new File("data/estudiantes.txt");
+        File carpeta = archivo.getParentFile();
+        try {
+            if (!carpeta.isDirectory() && !carpeta.mkdirs()) {
+                return "No se pudo crear data/.";
+            }
+            try (BufferedWriter escritor = new BufferedWriter(new FileWriter(archivo))) {
+                Nodo<Estudiante> actual = estudiantes.getHead();
+                while (actual != null) {
+                    escritor.write(String.join(";", actual.getDato().getIdentificacion(),
+                            actual.getDato().getNombre(), actual.getDato().getCorreo(),
+                            actual.getDato().getCodigo(),
+                            String.valueOf(actual.getDato().getSemestreActual())));
+                    escritor.newLine();
+                    actual = actual.getSiguiente();
+                }
+            }
+            return "Se guardaron " + estudiantes.getTamano() + " estudiantes.";
+        } catch (IOException e) {
+            return "No se pudo guardar estudiantes: " + e.getMessage();
+        }
+    }
+
+    public String cargarEstudiantes() {
+        while (!estudiantes.estaVacia()) estudiantes.eliminarInicio();
+        int omitidas = 0;
+        try (BufferedReader lector = new BufferedReader(
+                new FileReader("data/estudiantes.txt"))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                String[] campos = linea.split(";", -1);
+                if (campos.length != 5) {
+                    omitidas++;
+                    continue;
+                }
+                try {
+                    crearEstudiante(campos[0], campos[1], campos[2], campos[3],
+                            Integer.parseInt(campos[4]));
+                } catch (IllegalArgumentException e) {
+                    omitidas++;
+                    continue;
+                }
+            }
+            return "Se cargaron " + estudiantes.getTamano() + " estudiantes"
+                    + ". Lineas omitidas: " + omitidas;
+        } catch (FileNotFoundException e) {
+            return "No se encontro data/estudiantes.txt; la estructura queda vacia.";
+        } catch (IOException e) {
+            return "No se pudo leer data/estudiantes.txt: " + e.getMessage();
+        }
     }
 }

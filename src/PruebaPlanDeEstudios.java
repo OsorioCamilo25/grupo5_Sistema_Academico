@@ -49,7 +49,7 @@ public class PruebaPlanDeEstudios {
     System.out.println("Correcto: " + e.getMessage());
 }
 
-// Sin selección, siguiente() selecciona la primera materia.
+
 System.out.println(service.verMateriaSiguiente());
 
 try {
@@ -59,7 +59,7 @@ try {
     System.out.println("Correcto: " + e.getMessage());
 }
 
-// Avanzamos hasta la última de las tres materias.
+
 service.verMateriaSiguiente();
 service.verMateriaSiguiente();
 

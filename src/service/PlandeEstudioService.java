@@ -1,5 +1,13 @@
 package service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import model.domain.Materia;
 import model.domain.PlanDeEstudios;
 import model.structures.ListaSimple;
@@ -8,16 +16,21 @@ import model.structures.NodoDoble;
 
 public class PlandeEstudioService {
     
-    private final PlanDeEstudios plan;
+   private final PlanDeEstudios plan;
+private final ListaSimple<Materia> materiasRegistradas;
+private String estadoCarga;
 
-   
-    private final ListaSimple<Materia> materiasRegistradas;
+public PlandeEstudioService(String programa) {
+    plan = new PlanDeEstudios(programa);
+    materiasRegistradas = new ListaSimple<>();
 
-    public PlandeEstudioService(String programa) {
-        plan = new PlanDeEstudios(programa);
-        materiasRegistradas = new ListaSimple<>();
-    }
+    estadoCarga = cargarMateriasRegistradas()
+            + "\n" + cargarPlanDeEstudios();
+}
 
+public String consultarEstadoCarga() {
+    return estadoCarga;
+}
     
     public String registrarMateria(
             String codigo, String nombre, int creditos) {
@@ -122,5 +135,127 @@ public class PlandeEstudioService {
     public boolean existeMateriaRegistrada(String codigo) {
         return buscarMateriaPorCodigo(codigo) != null;
     }
+    public String guardarMateriasRegistradas() {
+        File archivo = new File("data/materias.txt");
+        File carpeta = archivo.getParentFile();
+
+        try {
+            if (!carpeta.isDirectory() && !carpeta.mkdirs()) {
+                return "No se pudo crear data/.";
+            }
+
+            try (BufferedWriter escritor =
+                    new BufferedWriter(new FileWriter(archivo))) {
+
+                Nodo<Materia> actual = materiasRegistradas.getHead();
+
+                while (actual != null) {
+                    Materia materia = actual.getDato();
+
+                    escritor.write(String.join(";",
+                            materia.getCodigo(),
+                            materia.getNombre(),
+                            String.valueOf(materia.getCreditos())));
+
+                    escritor.newLine();
+                    actual = actual.getSiguiente();
+                }
+            }
+
+            return "Se guardaron "
+                    + materiasRegistradas.getTamano()
+                    + " materias registradas.";
+
+        } catch (IOException e) {
+            return "No se pudo guardar materias: " + e.getMessage();
+        }
+    }
+
+    public String cargarMateriasRegistradas() {
+        while (plan.getMaterias().getHead() != null) {
+            plan.getMaterias().eliminar(plan.getMaterias().getHead());
+        }
+        while (!materiasRegistradas.estaVacia()) materiasRegistradas.eliminarInicio();
+        int omitidas = 0;
+        try (BufferedReader lector = new BufferedReader(
+                new FileReader("data/materias.txt"))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                String[] campos = linea.split(";", -1);
+                if (campos.length != 3) {
+                    omitidas++;
+                    continue;
+                }
+                try {
+                    registrarMateria(campos[0], campos[1], Integer.parseInt(campos[2]));
+                } catch (IllegalArgumentException e) {
+                    omitidas++;
+                    continue;
+                }
+            }
+            return "Se cargaron " + materiasRegistradas.getTamano() + " materiasregistradas"
+                    + ". Lineas omitidas: " + omitidas;
+        } catch (FileNotFoundException e) {
+            return "No se encontro data/materias.txt; la estructura queda vacia.";
+        } catch (IOException e) {
+            return "No se pudo leer data/materias.txt: " + e.getMessage();
+        }
+    }
+
+    public String guardarPlanDeEstudios() {
+        File archivo = new File("data/plan_estudios.txt");
+        File carpeta = archivo.getParentFile();
+        try {
+            if (!carpeta.isDirectory() && !carpeta.mkdirs()) {
+                return "No se pudo crear data/.";
+            }
+            try (BufferedWriter escritor = new BufferedWriter(new FileWriter(archivo))) {
+                NodoDoble<Materia> actual = plan.getMaterias().getHead();
+                while (actual != null) {
+                    escritor.write(String.join(";", plan.getPrograma(), actual.getDato().getCodigo()));
+                    escritor.newLine();
+                    actual = actual.getSiguiente();
+                }
+            }
+            return "Se guardaron " + plan.getMaterias().size() + " plandeestudios.";
+        } catch (IOException e) {
+            return "No se pudo guardar plandeestudios: " + e.getMessage();
+        }
+    }
+
+    public String cargarPlanDeEstudios() {
+        while (plan.getMaterias().getHead() != null) {
+            plan.getMaterias().eliminar(plan.getMaterias().getHead());
+        }
+        int omitidas = 0;
+        try (BufferedReader lector = new BufferedReader(
+                new FileReader("data/plan_estudios.txt"))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                String[] campos = linea.split(";", -1);
+                if (campos.length != 2) {
+                    omitidas++;
+                    continue;
+                }
+                try {
+                    if (!campos[0].equals(plan.getPrograma())) {
+                        omitidas++;
+                        continue;
+                    }
+                    agregarMateriaAlPlan(campos[1]);
+                } catch (IllegalArgumentException e) {
+                    omitidas++;
+                    continue;
+                }
+            }
+            return "Se cargaron " + plan.getMaterias().size() + " plandeestudios"
+                    + ". Lineas omitidas: " + omitidas;
+        } catch (FileNotFoundException e) {
+            return "No se encontro data/plan_estudios.txt; la estructura queda vacia.";
+        } catch (IOException e) {
+            return "No se pudo leer data/plan_estudios.txt: " + e.getMessage();
+        }
+    }
+
 }
 

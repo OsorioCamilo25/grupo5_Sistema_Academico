@@ -1,0 +1,3 @@
+MAT01;Calculo;3
+MAT02;Programacion;3
+MAT03;Fisica;3
